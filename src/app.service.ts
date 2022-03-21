@@ -3,6 +3,8 @@ import { EntityManager } from 'typeorm';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import * as cookieParser from 'cookie-parser';
 import { Cache } from 'cache-manager';
+import { SessionResponse } from './dto/SessionResponse';
+import { UserResponse } from './dto/UserResponse';
 
 type sessionType = {
   user_id: number
@@ -15,23 +17,41 @@ export class AppService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}
 
-  async findUser(connectSid: string): Promise<string> {
+  async findUser(connectSid: string): Promise<UserResponse> {
     const session = await this.findRedisSession(connectSid);
 
     if (session && session.user_id) {
-      return await this.manager.query(`
+      const user = await this.manager.query(`
         SELECT 
-          id as accountId, name, realname, email, allowed_marketing, mobile, country_code  
+          id as "accountId", 
+          name, 
+          realname as "realName", 
+          email, 
+          allowed_marketing as "allowedMarketing", 
+          mobile, 
+          country_code as "countryCode"  
         FROM users 
         WHERE id = ${session.user_id}
       `);
+
+      if(user.length) {
+        return new UserResponse(
+          user[0].accountId,
+          user[0].name,
+          user[0].realName,
+          user[0].email,
+          user[0].allowedMarketing,
+          user[0].mobile,
+          user[0].countryCode
+        );
+      }
     }
   }
 
-  async findSession(connectSid: string): Promise<number> {
+  async findSession(connectSid: string): Promise<SessionResponse> {
     const session = await this.findRedisSession(connectSid);
     if (session && session.user_id) {
-      return session.user_id;
+      return new SessionResponse(session.user_id);
     }
   }
 
