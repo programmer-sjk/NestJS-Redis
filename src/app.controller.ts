@@ -1,5 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
+import { DataSource, getConnectionManager, getManager } from "typeorm"
 
 @Controller()
 export class AppController {
@@ -10,12 +11,13 @@ export class AppController {
 
   @Get()
   getHello(): string {
-    return this.appService.getHello();
+    return 'aa';
+    // return this.appService.getHello();
   }
 
-  @Get('/test')
+  @Get('/user')
   async getTest(): Promise<string> {
-    
+    await this.appService.findUser();
     return 'testest';
   }
   //

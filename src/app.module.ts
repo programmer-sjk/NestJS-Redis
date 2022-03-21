@@ -6,15 +6,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
-    CacheModule.registerAsync({
-      useFactory: () => {
-        return {
-          store: redisStore,
-          host: 'localhost',
-          port: 6381,
-        }
-      },
-    }),
+    // CacheModule.registerAsync({
+    //   useFactory: () => {
+    //     return {
+    //       store: redisStore,
+    //       host: 'localhost',
+    //       port: 6381,
+    //     }
+    //   },
+    // }),
   ],
   controllers: [AppController],
   providers: [AppService],
