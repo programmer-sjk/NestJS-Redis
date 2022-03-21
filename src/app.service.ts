@@ -1,17 +1,56 @@
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable } from '@nestjs/common';
 import { EntityManager } from 'typeorm';
 import { InjectEntityManager } from '@nestjs/typeorm';
+import * as cookieParser from 'cookie-parser';
+import { Cache } from 'cache-manager';
+
+type sessionType = {
+  user_id: number
+}
 
 @Injectable()
 export class AppService {
   constructor(
     @InjectEntityManager() private manager: EntityManager,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
   ) {}
 
+  async findUser(connectSid: string): Promise<string> {
+    const session = await this.findRedisSession(connectSid);
 
-  async findUser(id: number): Promise<string> {
-    const r = await this.manager.query(`SELECT * FROM users WHERE id = ${id}`);
-    console.log(r);
-    return 'Hello World!';
+    if (session && session.user_id) {
+      return await this.manager.query(`
+        SELECT 
+          id as accountId, name, realname, email, allowed_marketing, mobile, country_code  
+        FROM users 
+        WHERE id = ${session.user_id}
+      `);
+    }
+  }
+
+  async findSession(connectSid: string): Promise<number> {
+    const session = await this.findRedisSession(connectSid);
+    if (session && session.user_id) {
+      return session.user_id;
+    }
+  }
+
+  private async findRedisSession(connectSid: string): Promise<sessionType> {
+    const sid = this.transformRedisKey(connectSid);
+    return await this.findRedisValue(sid);
+  }
+
+  private async findRedisValue(key: string): Promise<sessionType> {
+    return await this.cacheManager.get(key);
+  }
+
+  private transformRedisKey(connectSid: string): string {
+    const signedCookie = cookieParser.signedCookie(connectSid, 'sc');
+
+    if (!signedCookie) {
+      throw new Error(`정합성 불일치, connectSid=${connectSid}`)
+    }
+
+    return `sess:${signedCookie}`;
   }
 }

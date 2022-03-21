@@ -1,31 +1,38 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-import { DataSource, getConnectionManager, getManager } from "typeorm"
+import { Logger } from './logger/src/Logger';
+import { Cookies } from './decorator/cookie';
 
-@Controller()
+@Controller('/api')
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    // @Inject(CACHE_MANAGER) private cacheManager: Cache
+    private readonly logger: Logger,
   ) {}
 
-  @Get()
-  getHello(): string {
-    return 'aa';
-    // return this.appService.getHello();
+  @Get('/user')
+  async findUser(@Cookies('connect.sid') connectSid: string): Promise<string> {
+    try {
+      return await this.appService.findUser(connectSid);
+    } catch(e) {
+      this.logger.error(
+        `사용자 조회 실패: connectSid=${connectSid}, ${e.message}`,
+        e,
+      );
+    }
   }
 
-  @Get('/user')
-  async getTest(): Promise<string> {
-    await this.appService.findUser();
-    return 'testest';
+  @Get('/session')
+  async findSession(@Cookies('connect.sid') connectSid: string): Promise<number> {
+    try {
+      return await this.appService.findSession(connectSid);
+    } catch(e) {
+      this.logger.error(
+        `세션 조회 실패: connectSid=${connectSid}, ${e.message}`,
+        e,
+      );
+    }
+
   }
-  //
-  // @Get('/test2')
-  // async getTest2(): Promise<string> {
-  //   console.log(
-  //     await this.cacheManager.set('abc', 'ddd'),
-  //   )
-  //   return 'testest';
-  // }
 }
+
