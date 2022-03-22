@@ -3,15 +3,15 @@ import { EntityManager } from 'typeorm';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import * as cookieParser from 'cookie-parser';
 import { Cache } from 'cache-manager';
-import { SessionResponse } from './dto/SessionResponse';
-import { UserResponse } from './dto/UserResponse';
+import { UserResponse } from '../../dto/UserResponse';
+import { SessionResponse } from '../../dto/SessionResponse';
 
 type sessionType = {
   user_id: number
 }
 
 @Injectable()
-export class AppService {
+export class SessionService {
   constructor(
     @InjectEntityManager() private manager: EntityManager,
     @Inject(CACHE_MANAGER) private cacheManager: Cache
@@ -21,7 +21,7 @@ export class AppService {
     const session = await this.findRedisSession(connectSid);
 
     if (session && session.user_id) {
-      const user = await this.manager.query(`
+      const users = await this.manager.query(`
         SELECT 
           id as "accountId", 
           name, 
@@ -34,15 +34,16 @@ export class AppService {
         WHERE id = ${session.user_id}
       `);
 
-      if(user.length) {
+      if(users.length) {
+        const user = users[0];
         return new UserResponse(
-          user[0].accountId,
-          user[0].name,
-          user[0].realName,
-          user[0].email,
-          user[0].allowedMarketing,
-          user[0].mobile,
-          user[0].countryCode
+          user.accountId,
+          user.name,
+          user.realName,
+          user.email,
+          user.allowedMarketing,
+          user.mobile,
+          user.countryCode
         );
       }
     }
