@@ -7,7 +7,7 @@ import { ResponseStatus } from '../../web-common/src/res/ResponseStatus';
 import { SessionResponse } from '../../dto/SessionResponse';
 import { Logger } from '../../logger/src/Logger'
 
-@Controller('/api')
+@Controller('session')
 export class SessionController {
   constructor(
     private readonly userService: SessionService,
@@ -31,7 +31,7 @@ export class SessionController {
     }
   }
 
-  @Get('/session')
+  @Get()
   async findSession(@Cookies('connect.sid') connectSid: string): Promise<ResponseEntity<SessionResponse | string>> {
     try {
       const session = await this.userService.findSession(connectSid);

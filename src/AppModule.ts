@@ -2,7 +2,7 @@ import { CacheModule, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LoggerModule } from './logger/src/LoggerModule';
 import { HealthModule } from './module/health/HealthModule';
-import { SessionModule } from './module/user/SessionModule';
+import { SessionModule } from './module/session/SessionModule';
 import * as redisStore from 'cache-manager-redis-store';
 
 @Module({

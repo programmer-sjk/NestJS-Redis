@@ -6,7 +6,7 @@ import {
   TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
 
-@Controller('api/health')
+@Controller('health')
 @ApiTags('Health Check API')
 export class HealthController {
   constructor(
