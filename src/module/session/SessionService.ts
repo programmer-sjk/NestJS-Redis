@@ -3,8 +3,8 @@ import { EntityManager } from 'typeorm';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import * as cookieParser from 'cookie-parser';
 import { Cache } from 'cache-manager';
-import { UserResponse } from '../../dto/UserResponse';
-import { SessionResponse } from '../../dto/SessionResponse';
+import { UserResponse } from './dto/UserResponse';
+import { SessionResponse } from './dto/SessionResponse';
 
 type sessionType = {
   user_id: number

@@ -1,11 +1,11 @@
 import { CacheKey, Controller, Get } from '@nestjs/common';
 import { SessionService } from './SessionService';
 import { Cookies } from '../../decorator/cookie';
-import { UserResponse } from '../../dto/UserResponse';
-import { ResponseEntity } from '../../web-common/src/res/ResponseEntity';
-import { ResponseStatus } from '../../web-common/src/res/ResponseStatus';
-import { SessionResponse } from '../../dto/SessionResponse';
-import { Logger } from '../../logger/src/Logger'
+import { UserResponse } from './dto/UserResponse';
+import { ResponseEntity } from '../../libs/web-common/src/res/ResponseEntity';
+import { ResponseStatus } from '../../libs/web-common/src/res/ResponseStatus';
+import { SessionResponse } from './dto/SessionResponse';
+import { Logger } from '../../libs/logger/src/Logger'
 
 @Controller('session')
 export class SessionController {
