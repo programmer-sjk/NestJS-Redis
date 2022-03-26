@@ -5,6 +5,7 @@ import { HealthModule } from './module/health/HealthModule';
 import { SessionModule } from './module/session/SessionModule';
 import * as redisStore from 'cache-manager-redis-store';
 import { EnvUtil } from './libs/env-common/src/EnvUtil';
+import { AccountModule } from './module/account/AccountModule';
 
 const env = EnvUtil.getEnv();
 
@@ -37,6 +38,7 @@ const env = EnvUtil.getEnv();
       entities: [],
     }),
     LoggerModule.register(),
+    AccountModule,
     SessionModule,
     HealthModule
   ],
