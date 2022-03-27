@@ -43,4 +43,4 @@ const env = EnvUtil.getEnv();
     HealthModule
   ],
 })
-export class AppModule {}
+export class ApiModule {}

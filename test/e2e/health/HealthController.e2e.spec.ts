@@ -1,17 +1,19 @@
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '../../../src/AppModule';
+import { ApiModule } from '../../../src/ApiModule';
+import { setNestApp } from '../../../src/libs/web-common/src/app/setNestApp';
 
 describe('HealthB2bController (e2e)', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [ApiModule],
     }).compile();
 
     app = module.createNestApplication();
+    setNestApp(app);
     await app.init();
   });
 
