@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ApiModule } from '../../../src/ApiModule';
 import { setNestApp } from '../../../src/libs/web-common/src/app/setNestApp';
 
-describe('HealthB2bController (e2e)', () => {
+describe('HealthController (e2e)', () => {
   let app: INestApplication;
 
   beforeAll(async () => {
