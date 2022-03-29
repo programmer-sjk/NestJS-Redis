@@ -6,21 +6,18 @@ import { SessionModule } from './module/session/SessionModule';
 import * as redisStore from 'cache-manager-redis-store';
 import { EnvUtil } from './libs/env-common/src/EnvUtil';
 import { AccountModule } from './module/account/AccountModule';
+import type { RedisClientOptions } from 'redis';
 
 const env = EnvUtil.getEnv();
 
 @Module({
   imports: [
     EnvUtil.getConfigModule(),
-    CacheModule.registerAsync({
+    CacheModule.register<RedisClientOptions>({
       isGlobal: true,
-      useFactory: () => {
-        return {
-          store: redisStore,
-          host: env.redis.host,
-          port: env.redis.port,
-        }
-      },
+      store: redisStore,
+      host: env.redis.host,
+      port: env.redis.port,
     }),
     TypeOrmModule.forRoot({
       maxQueryExecutionTime: env.database.connectionTimeout,
