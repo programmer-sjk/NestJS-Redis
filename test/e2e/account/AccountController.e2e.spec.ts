@@ -7,10 +7,16 @@ import { Cache } from 'cache-manager';
 import { SessionResponse } from '../../../src/module/session/dto/SessionResponse';
 import { ResponseStatus } from '../../../src/libs/web-common/src/res/ResponseStatus';
 import { ResponseEntity } from '../../../src/libs/web-common/src/res/ResponseEntity';
+import { EntityManager } from 'typeorm';
+import { closeNestApp } from '../../closeNestApp';
+import { createUsersTable } from '../util/createUsersTable';
+import { dropUsersTable } from '../util/dropUsersTable';
+import { AccountResponse } from '../../../src/module/account/dto/AccountResponse';
 
 describe('AccountController (e2e)', () => {
   let app: INestApplication;
   let cacheManager: Cache;
+  let manager: EntityManager;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -18,17 +24,23 @@ describe('AccountController (e2e)', () => {
     }).compile();
 
     cacheManager = module.get<Cache>(CACHE_MANAGER);
+    manager = module.get<EntityManager>(EntityManager);
     app = module.createNestApplication();
     setNestApp(app);
     await app.init();
   });
 
   beforeEach(async () => await cacheManager.reset());
-  afterAll(async () => await app.close());
+  afterAll(async () => {
+    await manager.query(dropUsersTable);
+    await closeNestApp(app)
+  });
 
   it('헤더 쿠키 값이 Redis 에 있을 경우, account 정보를 반환한다.', async () => {
-    // given
-    const expectedUserId = 168722;
+    await manager.query(createUsersTable);
+    const users = await manager.query(`INSERT INTO users(status, email, name) VALUES('validated', 'test.inflab.com', '꾸기') RETURNING "id", "email", "name"`);
+    const user = users[0];
+    const expectedUserId = user.id;
     const session = {
       cookie: {
         originalMaxAge: 604800000,
@@ -52,9 +64,11 @@ describe('AccountController (e2e)', () => {
 
     // then
     expect(response.status).toBe(HttpStatus.OK);
-    const body: ResponseEntity<SessionResponse> = response.body;
+    const body: ResponseEntity<AccountResponse> = response.body;
     expect(body.statusCode).toBe(ResponseStatus.OK);
     expect(body.data.accountId).toBe(expectedUserId);
+    expect(body.data.name).toBe(user.name);
+    expect(body.data.email).toBe(user.email);
   });
 
   it('헤더 쿠키 값이 Redis 에 없을 경우, UNAUTHORIZED를 반환한다.', async () => {
