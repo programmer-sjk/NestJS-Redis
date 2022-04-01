@@ -21,8 +21,6 @@ export class AccountService {
       const users = await this.manager.query(`
         SELECT 
           id as "accountId", 
-          name, 
-          realname as "realName", 
           email, 
           allowed_marketing as "allowedMarketing", 
           mobile, 
@@ -35,8 +33,6 @@ export class AccountService {
         const user = users[0];
         return new AccountResponse(
           user.accountId,
-          user.name,
-          user.realName,
           user.email,
           user.allowedMarketing,
           user.mobile,

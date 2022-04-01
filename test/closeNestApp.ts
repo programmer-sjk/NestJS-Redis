@@ -3,6 +3,6 @@ import { INestApplication } from '@nestjs/common/interfaces/nest-application.int
 
 export async function closeNestApp(app: INestApplication) {
   await app.close();
-  const redisClient: any = app.get(CACHE_MANAGER).store.getClient();
+  const redisClient = app.get(CACHE_MANAGER).store.getClient();
   redisClient.quit()
 }
