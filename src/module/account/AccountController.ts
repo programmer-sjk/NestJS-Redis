@@ -14,11 +14,11 @@ export class AccountController {
   ) {}
 
   @Get()
-  async findUser(@Cookies('connect.sid') connectSid: string): Promise<ResponseEntity<AccountResponse | string>> {
+  async findAccount(@Cookies('connect.sid') connectSid: string): Promise<ResponseEntity<AccountResponse | string>> {
     try {
-      const user = await this.accountService.findUser(connectSid);
-      return user ?
-        ResponseEntity.OK_WITH(user) :
+      const account = await this.accountService.findAccount(connectSid);
+      return account ?
+        ResponseEntity.OK_WITH(account) :
         ResponseEntity.ERROR_WITH("유효하지 않은 세션입니다.", ResponseStatus.UNAUTHORIZED);
 
     } catch(e) {

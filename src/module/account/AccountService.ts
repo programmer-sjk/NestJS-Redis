@@ -14,11 +14,11 @@ export class AccountService {
     private redisService: RedisService,
   ) {}
 
-  async findUser(connectSid: string): Promise<AccountResponse> {
+  async findAccount(connectSid: string): Promise<AccountResponse> {
     const session = await this.redisService.findRedisSession(connectSid);
 
     if (session && session.user_id) {
-      const users = await this.manager.query(`
+      const accounts = await this.manager.query(`
         SELECT 
           id as "accountId", 
           email, 
@@ -29,14 +29,14 @@ export class AccountService {
         WHERE id = ${session.user_id}
       `);
 
-      if(users.length) {
-        const user = users[0];
+      if(accounts.length) {
+        const account = accounts[0];
         return new AccountResponse(
-          user.accountId,
-          user.email,
-          user.allowedMarketing,
-          user.mobile,
-          user.countryCode
+          account.accountId,
+          account.email,
+          account.allowedMarketing,
+          account.mobile,
+          account.countryCode
         );
       }
     }
