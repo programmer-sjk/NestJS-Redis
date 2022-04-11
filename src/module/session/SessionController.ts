@@ -1,4 +1,4 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Delete, Get, Post } from '@nestjs/common';
 import { SessionService } from './SessionService';
 import { Cookies } from '../../decorator/cookie';
 import { ResponseEntity } from '../../libs/web-common/src/res/ResponseEntity';
@@ -30,7 +30,7 @@ export class SessionController {
 
   }
 
-  @Post('delete')
+  @Delete('delete')
   async deleteSession(@Cookies('connect.sid') connectSid: string): Promise<ResponseEntity<SessionResponse | string>> {
     try {
       await this.sessionService.deleteSession(connectSid);
