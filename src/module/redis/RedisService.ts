@@ -20,8 +20,17 @@ export class RedisService {
     return await this.findRedisValue(sid);
   }
 
+  public async deleteRedisSession(connectSid: string): Promise<void> {
+    const sid = this.transformRedisKey(connectSid);
+    await this.deleteRedisValue(sid);
+  }
+
   private async findRedisValue(key: string): Promise<sessionType> {
     return await this.cacheManager.get(key);
+  }
+
+  private async deleteRedisValue(key: string): Promise<void> {
+    await this.cacheManager.del(key);
   }
 
   private transformRedisKey(connectSid: string): string {

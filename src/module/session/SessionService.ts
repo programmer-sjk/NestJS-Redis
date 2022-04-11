@@ -19,4 +19,8 @@ export class SessionService {
       return new SessionResponse(session.user_id);
     }
   }
+
+  async deleteSession(connectSid: string): Promise<void> {
+    await this.redisService.deleteRedisSession(connectSid);
+  }
 }
