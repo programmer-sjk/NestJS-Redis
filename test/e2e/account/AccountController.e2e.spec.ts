@@ -67,7 +67,6 @@ describe('AccountController (e2e)', () => {
     const body: ResponseEntity<AccountResponse> = response.body;
     expect(body.statusCode).toBe(ResponseStatus.OK);
     expect(body.data.accountId).toBe(expectedUserId);
-    expect(body.data.name).toBe(user.name);
     expect(body.data.email).toBe(user.email);
   });
 
