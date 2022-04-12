@@ -5,6 +5,7 @@ import { AccountService } from './AccountService';
 import { ResponseEntity } from '../../libs/web-common/src/res/ResponseEntity';
 import { ResponseStatus } from '../../libs/web-common/src/res/ResponseStatus';
 import { Logger } from '../../libs/logger/src/Logger'
+import { WithdrawalResponse } from './dto/withdrawalResponse';
 
 @Controller('account')
 export class AccountController {
@@ -26,6 +27,19 @@ export class AccountController {
         `사용자 조회 실패: connectSid=${connectSid}, ${e.message}`,
         e,
       );
+      return ResponseEntity.ERROR_WITH(e.message);
+    }
+  }
+
+  @Get('withdrawal')
+  async findWithdrawalAccounts(): Promise<
+    ResponseEntity<WithdrawalResponse[] | string>
+    > {
+    try {
+      const accounts = await this.accountService.findWithdrawalAccounts();
+      return ResponseEntity.OK_WITH(accounts);
+    } catch (e) {
+      this.logger.error(`탈퇴한 유저 조회 실패, ${e.message}`, e);
       return ResponseEntity.ERROR_WITH(e.message);
     }
   }

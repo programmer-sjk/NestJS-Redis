@@ -4,6 +4,7 @@ import { InjectEntityManager } from '@nestjs/typeorm';
 import { Cache } from 'cache-manager';
 import { AccountResponse } from './dto/AccountResponse';
 import { RedisService } from '../redis/RedisService';
+import { WithdrawalResponse } from './dto/withdrawalResponse';
 
 
 @Injectable()
@@ -40,5 +41,13 @@ export class AccountService {
         );
       }
     }
+  }
+
+  async findWithdrawalAccounts(): Promise<WithdrawalResponse[]> {
+    const accounts = await this.manager.query(
+      `SELECT "id" FROM "users" WHERE "deleted_at" > now() - interval '7' day`,
+    );
+
+    return accounts.map((account) => new WithdrawalResponse(account.id));
   }
 }
