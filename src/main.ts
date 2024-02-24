@@ -1,13 +1,8 @@
 import { NestFactory } from '@nestjs/core';
-import { ApiModule } from './ApiModule';
-import { setNestApp } from './libs/web-common/src/app/setNestApp';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(ApiModule, {
-    logger: ['log', 'error']
-  });
-
-  setNestApp(app);
-  await app.listen(5000);
+  const app = await NestFactory.create(AppModule);
+  await app.listen(3000);
 }
 bootstrap();
