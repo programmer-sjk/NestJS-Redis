@@ -20,4 +20,4 @@
   - 동시성 문제가 발생하는 `increaseRecommendCount` 함수
   - Redis의 Set NX 명령을 활용한 `increaseRecommendCountBySetNx` 함수
   - Redis의 RedLock을 활용한 `increaseRecommendCountByRedLock` 함수
-- 실제 동작은 `movie.service에.spec.ts` 테스트 코드에서 확인 가능
+- 실제 동작은 `movie.service.spec.ts` 테스트 코드에서 확인 가능
