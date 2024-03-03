@@ -12,4 +12,12 @@
 
 ### person
 
-- Redis의 Sorted Set을 이용해 랭킹 추가/조회 기능 제공
+- Redis의 **`Sorted Set을 이용해 랭킹 추가/조회 기능`** 제공
+
+### movie
+
+- 영화 추천 수 업데이트 기능을 가지며 동시성 문제와 해결 방법 제공
+  - 동시성 문제가 발생하는 `increaseRecommendCount` 함수
+  - Redis의 Set NX 명령을 활용한 `increaseRecommendCountBySetNx` 함수
+  - Redis의 RedLock을 활용한 `increaseRecommendCountByRedLock` 함수
+- 실제 동작은 `movie.service에.spec.ts` 테스트 코드에서 확인 가능
