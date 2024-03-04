@@ -22,7 +22,7 @@ export class MovieService {
   async increaseRecommendCountBySetNx(id: number) {
     const key = 'cacheKey';
     while (!(await this.redisService.setNx(key, 'value'))) {
-      sleep(100);
+      await sleep(100);
     }
 
     const movie = await this.movieRepository.findOne(id);
@@ -40,16 +40,16 @@ export class MovieService {
       lock = await this.redisService.acquireLock(
         `increase-recommend-count:${id}`
       );
+
+      const movie = await this.movieRepository.findOne(id);
+      await this.movieRepository.updateRecommendCount(
+        id,
+        movie.recommendCount + 1
+      );
     } catch (err) {
-      throw new Error('잠금 획득 실패');
+      throw err;
+    } finally {
+      await lock.release();
     }
-
-    const movie = await this.movieRepository.findOne(id);
-    await this.movieRepository.updateRecommendCount(
-      id,
-      movie.recommendCount + 1
-    );
-
-    await lock.release().catch(() => undefined);
   }
 }
